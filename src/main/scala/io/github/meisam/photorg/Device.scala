@@ -11,7 +11,7 @@
   If not, see <https://www.gnu.org/licenses/>.
  */
 
-package io.github.meisam.pixelpictureorganizer
+package io.github.meisam.photorg
 
 import cats.free.Free
 import cats.free.Free.liftF
