@@ -1,0 +1,14 @@
+{
+    "name": "Scala",
+    "image": "meisamf/gitpod-scala:scala3.2.1-openjdk17-bullseye",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                 "scalameta.metals"
+            ]
+        }
+    },
+    "features": {
+        "git": "latest"
+    }
+}
