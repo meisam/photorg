@@ -20,15 +20,19 @@ import cats.syntax.traverse
 
 type ErrorMessages = String
 type DeviceId = String
-type MediaFile = String
+enum MediaFile(name: String):
+  case OriginalMediaFile(name: String) extends MediaFile(name)
+  case PulledMediaFile(name: String) extends MediaFile(name)
+  case PushedMediaFile(name: String) extends MediaFile(name)
 
+import MediaFile.{OriginalMediaFile, PulledMediaFile, PushedMediaFile}
 enum AndroidDeviceA[A]:
   case GetMediaFiles(deviceId: DeviceId, directory: String)
-      extends AndroidDeviceA[List[MediaFile]]()
-  case PullMediaFile(deviceId: DeviceId, mediaFile: MediaFile)
-      extends AndroidDeviceA[MediaFile]
-  case PushMediaFile(deviceId: DeviceId, mediaFile: MediaFile)
-      extends AndroidDeviceA[MediaFile]
+      extends AndroidDeviceA[List[OriginalMediaFile]]
+  case PullMediaFile(deviceId: DeviceId, mediaFile: OriginalMediaFile)
+      extends AndroidDeviceA[PulledMediaFile]
+  case PushMediaFile(deviceId: DeviceId, mediaFile: PulledMediaFile)
+      extends AndroidDeviceA[PushedMediaFile]
 
 type AndroidDevice[A] = Free[AndroidDeviceA, A]
 
@@ -37,18 +41,18 @@ import AndroidDeviceA.*
 def getMediaFiles(
     deviceId: DeviceId,
     directory: String
-): AndroidDevice[List[MediaFile]] =
-  liftF[AndroidDeviceA, List[MediaFile]](GetMediaFiles(deviceId, directory))
+): AndroidDevice[List[OriginalMediaFile]] =
+  liftF[AndroidDeviceA, List[OriginalMediaFile]](GetMediaFiles(deviceId, directory))
 
 def pullMediaFile(deviceId: DeviceId)(
-    mediaFile: MediaFile
-): AndroidDevice[MediaFile] =
-  liftF[AndroidDeviceA, MediaFile](PullMediaFile(deviceId, mediaFile))
+    mediaFile: OriginalMediaFile
+): AndroidDevice[PulledMediaFile] =
+  liftF[AndroidDeviceA, PulledMediaFile](PullMediaFile(deviceId, mediaFile))
 
 def pushMediaFile(deviceId: DeviceId)(
-    mediaFile: MediaFile
-): AndroidDevice[MediaFile] =
-  liftF[AndroidDeviceA, MediaFile](PushMediaFile(deviceId, mediaFile))
+    mediaFile: PulledMediaFile
+): AndroidDevice[PushedMediaFile] =
+  liftF[AndroidDeviceA, PushedMediaFile](PushMediaFile(deviceId, mediaFile))
 
 def backupMediaFilesApp(
     sourceDeviceId: DeviceId,
@@ -63,21 +67,23 @@ def backupMediaFilesApp(
     filesToBePushed <- filesToBePulled.traverse(filePushingFunction)
   yield filesToBePushed
 
+import cats.arrow.FunctionK
 import cats.{Id, ~>}
 val mockCompiler: AndroidDeviceA ~> Id = new:
-  var files = List("Image1.jpg", "image2.CR2", "imag3.MOV", "image4.mp4")
+  val files: List[OriginalMediaFile] = List("Image1.jpg", "image2.CR2", "imag3.MOV", "image4.mp4").map(OriginalMediaFile.apply)
   def apply[A](fa: AndroidDeviceA[A]): Id[A] =
     fa match
       case GetMediaFiles(deviceId: DeviceId, directory: String) =>
         println(f"GetMedia is called: $deviceId")
         files
-      case PullMediaFile(deviceId: DeviceId, mediaFile: MediaFile) =>
+      case PullMediaFile(deviceId, mediaFile) =>
         println(f"PullMediaFile is called: $mediaFile")
-        mediaFile
-      case PushMediaFile(deviceId: DeviceId, mediaFile: MediaFile) =>
+        PulledMediaFile(mediaFile.name)
+      case PushMediaFile(deviceId, mediaFile) =>
         println(f"PushMediaFile is called: $mediaFile")
-        mediaFile
+        PushedMediaFile(mediaFile.name)
 
 @main
 def freeMonadRun =
-  val x = backupMediaFilesApp("1234", "abcd", "/DCIM").foldMap(mockCompiler)
+  val backedupFiles = backupMediaFilesApp("1234", "abcd", "/DCIM").foldMap(mockCompiler)
+  println(backedupFiles)
