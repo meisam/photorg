@@ -29,6 +29,8 @@ import MediaFile.{OriginalMediaFile, PulledMediaFile, PushedMediaFile}
 enum AndroidDeviceA[A]:
   case GetMediaFiles(deviceId: DeviceId, directory: String)
       extends AndroidDeviceA[List[OriginalMediaFile]]
+  case GetFileSize(deviceId: DeviceId, mediaFile: OriginalMediaFile)
+    extends AndroidDeviceA[Long]
   case PullMediaFile(deviceId: DeviceId, mediaFile: OriginalMediaFile)
       extends AndroidDeviceA[PulledMediaFile]
   case PushMediaFile(deviceId: DeviceId, mediaFile: PulledMediaFile)
@@ -44,6 +46,10 @@ def getMediaFiles(
 ): AndroidDevice[List[OriginalMediaFile]] =
   liftF[AndroidDeviceA, List[OriginalMediaFile]](GetMediaFiles(deviceId, directory))
 
+def getFileSize(deviceId: DeviceId)(
+  mediaFile: OriginalMediaFile
+): AndroidDevice[Long] = 
+  liftF[AndroidDeviceA, Long](GetFileSize(deviceId, mediaFile))
 def pullMediaFile(deviceId: DeviceId)(
     mediaFile: OriginalMediaFile
 ): AndroidDevice[PulledMediaFile] =
@@ -63,6 +69,7 @@ def backupMediaFilesApp(
   val filePushingFunction = pushMediaFile(targetDeviceId)
   for
     mediaFiles <- getMediaFiles(sourceDeviceId, cameraPath)
+    totalSize <- mediaFiles.map(getFileSize(sourceDeviceId)).sequence.map(_.sum)
     filesToBePulled <- mediaFiles.traverse(filePullingFunction)
     filesToBePushed <- filesToBePulled.traverse(filePushingFunction)
   yield filesToBePushed
@@ -76,6 +83,10 @@ val mockCompiler: AndroidDeviceA ~> Id = new:
       case GetMediaFiles(deviceId: DeviceId, directory: String) =>
         println(f"GetMedia is called: $deviceId")
         files
+      case GetFileSize(deviceId, file) =>
+        val size = file.name.size.toLong
+        println(f"GetFileSize is called: $file has size $size")
+        size
       case PullMediaFile(deviceId, mediaFile) =>
         println(f"PullMediaFile is called: $mediaFile")
         PulledMediaFile(mediaFile.name)
