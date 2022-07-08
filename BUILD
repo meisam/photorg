@@ -14,7 +14,7 @@ scala_binary(
 scala_library(
     name = "scala_cats_deps",
     exports = [
-        "@maven//:org_typelevel_cats_free_3_2_7_0",
-        "@maven//:org_typelevel_cats_core_3_2_7_0",
+        "@maven//:org_typelevel_cats_free_3_2_8_0",
+        "@maven//:org_typelevel_cats_core_3_2_8_0",
     ],
 )

@@ -67,8 +67,8 @@ load("@rules_jvm_external//:defs.bzl", "maven_install")
 
 maven_install(
     artifacts = [
-        "org.typelevel:cats-free_3:2.7.0",
-        "org.typelevel:cats-core_3:2.7.0",
+        "org.typelevel:cats-free_3:2.8.0",
+        "org.typelevel:cats-core_3:2.8.0",
     ],
     repositories = [
         "https://repo1.maven.org/maven2",
