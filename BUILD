@@ -2,7 +2,7 @@ load("@io_bazel_rules_scala//scala:scala.bzl", "scala_library", "scala_binary", 
 
 scala_binary(
     name = "photorg",
-    main_class = "OrganizePhotos",
+    main_class = "Device",
     srcs = [
         "src/main/scala/io/github/meisam/photorg/Device.scala",
     ],
