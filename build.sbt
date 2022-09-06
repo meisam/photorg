@@ -11,7 +11,7 @@
   If not, see <https://www.gnu.org/licenses/>.
  */
  
- val scala3Version = "3.1.3"
+ val scala3Version = "3.2.0"
 
 lazy val root = project
   .in(file("."))

@@ -2,7 +2,7 @@ load("//scala:scala_cross_version.bzl", "extract_major_version")
 
 def _default_scala_version():
     """return the scala version for use in maven coordinates"""
-    return "3.1.2"
+    return "3.2.0"
 
 def _store_config(repository_ctx):
     scala_version = repository_ctx.os.environ.get(
