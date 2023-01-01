@@ -11,7 +11,7 @@
   If not, see <https://www.gnu.org/licenses/>.
  */
  
- val scala3Version = "3.2.0"
+ val scala3Version = "3.2.1"
 
 lazy val root = project
   .in(file("."))
@@ -24,7 +24,7 @@ lazy val root = project
 
     libraryDependencies ++= Seq(
         "org.scalameta" %% "munit" % "0.7.29" % Test,
-        "org.typelevel" %% "cats-free" % "2.8.0",
+        "org.typelevel" %% "cats-free" % "2.9.0",
     )
   )
 
