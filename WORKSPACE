@@ -11,13 +11,11 @@ http_archive(
 
 http_archive(
     name = "io_bazel_rules_scala",
-    url = "https://codeload.github.com/meisam/rules_scala/tar.gz/refs/tags/2023-02-20-scala3.2-support"
+    url = "https://github.com/meisam/rules_scala/releases/download/2023-02-20-scala3.2-support/rules_scala-5.0.0-2023-02-20-scala3.2-support.tar.gz",
     type = "tar.gz",
-    sha256 = "77a3b9308a8780fff3f10cdbbe36d55164b85a48123033f5e970fdae262e8eb2",
+    sha256 = "c19bcd0f07ab64b5dc9ec2172d471746edb4b3990c9d401e9c9771ee40c6c21d",
 )
 
-# Stores Scala version and other configuration
-# 2.12 is a default version, other versions can be use by passing them explicitly:
 load("@io_bazel_rules_scala//:scala_config.bzl", "scala_config")
 scala_config(scala_version = "3.2.1")
 
