@@ -30,7 +30,7 @@ enum AndroidDeviceA[A]:
   case GetMediaFiles(deviceId: DeviceId, directory: String)
       extends AndroidDeviceA[List[OriginalMediaFile]]
   case GetFileSize(deviceId: DeviceId, mediaFile: OriginalMediaFile)
-    extends AndroidDeviceA[Long]
+      extends AndroidDeviceA[Long]
   case PullMediaFile(deviceId: DeviceId, mediaFile: OriginalMediaFile)
       extends AndroidDeviceA[PulledMediaFile]
   case PushMediaFile(deviceId: DeviceId, mediaFile: PulledMediaFile)
@@ -44,11 +44,13 @@ def getMediaFiles(
     deviceId: DeviceId,
     directory: String
 ): AndroidDevice[List[OriginalMediaFile]] =
-  liftF[AndroidDeviceA, List[OriginalMediaFile]](GetMediaFiles(deviceId, directory))
+  liftF[AndroidDeviceA, List[OriginalMediaFile]](
+    GetMediaFiles(deviceId, directory)
+  )
 
 def getFileSize(deviceId: DeviceId)(
-  mediaFile: OriginalMediaFile
-): AndroidDevice[Long] = 
+    mediaFile: OriginalMediaFile
+): AndroidDevice[Long] =
   liftF[AndroidDeviceA, Long](GetFileSize(deviceId, mediaFile))
 def pullMediaFile(deviceId: DeviceId)(
     mediaFile: OriginalMediaFile
@@ -76,8 +78,11 @@ def backupMediaFilesApp(
 
 import cats.arrow.FunctionK
 import cats.{Id, ~>}
-val mockCompiler: AndroidDeviceA ~> Id = new:
-  val files: List[OriginalMediaFile] = List("Image1.jpg", "image2.CR2", "imag3.MOV", "image4.mp4").map(OriginalMediaFile.apply)
+val mockCommandInterpreter: AndroidDeviceA ~> Id = new:
+  val files: List[OriginalMediaFile] =
+    List("Image1.jpg", "image2.CR2", "imag3.MOV", "image4.mp4").map(
+      OriginalMediaFile.apply
+    )
   def apply[A](fa: AndroidDeviceA[A]): Id[A] =
     fa match
       case GetMediaFiles(deviceId: DeviceId, directory: String) =>
@@ -94,7 +99,37 @@ val mockCompiler: AndroidDeviceA ~> Id = new:
         println(f"PushMediaFile is called: $mediaFile")
         PushedMediaFile(mediaFile.name)
 
+val onDeviceCommandnInterpreter: AndroidDeviceA ~> Id = new:
+  import scala.sys.process.*
+  val files: List[OriginalMediaFile] =
+    List("Image1.jpg", "image2.CR2", "imag3.MOV", "image4.mp4").map(
+      OriginalMediaFile.apply
+    )
+  def apply[A](fa: AndroidDeviceA[A]): Id[A] =
+    fa match
+      case GetMediaFiles(deviceId: DeviceId, directory: String) =>
+        println(f"GetMedia is called: $deviceId")
+        s"adb -s $deviceId shell find $directory -type f".lazyLines
+          .map[OriginalMediaFile](OriginalMediaFile.apply)
+          .toList
+      case GetFileSize(deviceId, file) =>
+        val size =
+          s"adb -s $deviceId shell du ${file.name}".lazyLines.headOption
+            .map(_.takeWhile(_.isDigit).toLong)
+            .getOrElse(-1L)
+        println(f"GetFileSize is called: $file has size $size")
+        size
+      case PullMediaFile(deviceId, mediaFile) =>
+        println(f"PullMediaFile is called: $mediaFile")
+        PulledMediaFile(mediaFile.name)
+      case PushMediaFile(deviceId, mediaFile) =>
+        println(f"PushMediaFile is called: $mediaFile")
+        PushedMediaFile(mediaFile.name)
+
 @main
-def freeMonadRun =
-  val backedupFiles = backupMediaFilesApp("1234", "abcd", "/DCIM").foldMap(mockCompiler)
+def freeMonadRun(sourceDeviceId: String, targetDeviceId: String, mediaDirectory:String)=
+
+  val backedupFiles =
+    backupMediaFilesApp(sourceDeviceId, targetDeviceId, mediaDirectory)
+      //.foldMap(onDeviceCommandnInterpreter)
   println(backedupFiles)

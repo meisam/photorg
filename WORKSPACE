@@ -1,28 +1,21 @@
 # WORKSPACE
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
-skylib_version = "1.3.0"
+skylib_version = "1.4.1"
 http_archive(
     name = "bazel_skylib",
-    sha256 = "74d544d96f4a5bb630d465ca8bbcfe231e3594e5aae57e1edbf17a6eb3ca2506",
+    sha256 = "b8a1527901774180afc798aeb28c4634bdccf19c4d98e7bdd1ce79d1fe9aaad7",
     type = "tar.gz",
     url = "https://mirror.bazel.build/github.com/bazelbuild/bazel-skylib/releases/download/{}/bazel-skylib-{}.tar.gz".format(skylib_version, skylib_version),
 )
 
-# http_archive(
-#     name = "io_bazel_rules_scala",
-#     url = "https://github.com/bazelbuild/rules_scala/releases/download/20220201/rules_scala-20220201.zip",
-#     type = "zip",
-#     strip_prefix = "rules_scala-20220201",
-#     sha256 = "77a3b9308a8780fff3f10cdbbe36d55164b85a48123033f5e970fdae262e8eb2",
-# )
-local_repository(
+http_archive(
     name = "io_bazel_rules_scala",
-    path = "../rules_scala",
+    url = "https://github.com/meisam/rules_scala/releases/download/2023-02-20-scala3.2-support/rules_scala-5.0.0-2023-02-20-scala3.2-support.tar.gz",
+    type = "tar.gz",
+    sha256 = "c19bcd0f07ab64b5dc9ec2172d471746edb4b3990c9d401e9c9771ee40c6c21d",
 )
 
-# Stores Scala version and other configuration
-# 2.12 is a default version, other versions can be use by passing them explicitly:
 load("@io_bazel_rules_scala//:scala_config.bzl", "scala_config")
 scala_config(scala_version = "3.2.1")
 
