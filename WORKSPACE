@@ -63,7 +63,7 @@ maven_install(
         "org.typelevel:cats-core_3:2.9.0",
         "org.typelevel:cats-kernel_3:2.9.0",
         "org.typelevel:cats-kernel_3:2.9.0",
-        "com.monovore::decline:2.4.1",
+        "com.monovore:decline_3:2.4.1",
     ],
     repositories = [
         "https://repo1.maven.org/maven2",
