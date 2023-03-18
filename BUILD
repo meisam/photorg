@@ -24,5 +24,6 @@ scala_library(
         "@maven//:org_typelevel_cats_free_3_2_9_0",
         "@maven//:org_typelevel_cats_core_3_2_9_0",
         "@maven//:org_typelevel_cats_kernel_3_2_9_0",
+        "@maven//:com_monovore_decline_3_2_4_1",
     ],
 )

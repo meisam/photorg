@@ -25,6 +25,8 @@ lazy val root = project
     libraryDependencies ++= Seq(
         "org.scalameta" %% "munit" % "1.0.0-M7" % Test,
         "org.typelevel" %% "cats-free" % "2.9.0",
+        "org.typelevel" %% "cats-kernel" % "2.9.0",
+        "com.monovore" %% "decline" % "2.4.1",
     )
   )
 
