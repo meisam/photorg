@@ -10,9 +10,9 @@ import cats.{Id, ~>}
 import MediaFile.{OriginalMediaFile, PulledMediaFile, PushedMediaFile}
 import AndroidDeviceA.*
 
-import org.scalatest._
-import flatspec._
-import matchers._
+import org.scalatest.*
+import flatspec.*
+import matchers.*
 
 abstract class UnitSpec extends AnyFlatSpec with ScalaCheckPropertyCheck with should.Matchers with
   OptionValues with Inside with Inspectors
