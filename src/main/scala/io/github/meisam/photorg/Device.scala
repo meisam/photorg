@@ -109,12 +109,12 @@ val onDeviceCommandnInterpreter: AndroidDeviceA ~> Id = new:
     fa match
       case GetMediaFiles(deviceId: DeviceId, directory: String) =>
         println(f"GetMedia is called: $deviceId")
-        s"adb -s $deviceId shell find $directory -type f".lazyLines
+        val files = s"adb -s $deviceId shell find '$directory' -type f".lazyLines
           .map[OriginalMediaFile](OriginalMediaFile.apply)
           .toList
       case GetFileSize(deviceId, file) =>
         val size =
-          s"adb -s $deviceId shell du ${file.name}".lazyLines.headOption
+          s"adb -s $deviceId shell du '${file.name}'".lazyLines.headOption
             .map(_.takeWhile(_.isDigit).toLong)
             .getOrElse(-1L)
         println(f"GetFileSize is called: $file has size $size")
@@ -128,7 +128,7 @@ val onDeviceCommandnInterpreter: AndroidDeviceA ~> Id = new:
 
 @main
 def freeMonadRun(sourceDeviceId: String, targetDeviceId: String, mediaDirectory:String)=
-
+  
   val backedupFiles =
     backupMediaFilesApp(sourceDeviceId, targetDeviceId, mediaDirectory)
       //.foldMap(onDeviceCommandnInterpreter)
