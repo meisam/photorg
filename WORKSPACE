@@ -17,7 +17,7 @@ http_archive(
 )
 
 load("@io_bazel_rules_scala//:scala_config.bzl", "scala_config")
-scala_config(scala_version = "3.2.1")
+scala_config(scala_version = "3.3.6")
 
 load("@io_bazel_rules_scala//scala:scala.bzl", "scala_repositories")
 scala_repositories()
