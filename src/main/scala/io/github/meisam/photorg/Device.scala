@@ -108,10 +108,9 @@ val onDeviceCommandnInterpreter: AndroidDeviceA ~> Id = new:
   def apply[A](fa: AndroidDeviceA[A]): Id[A] =
     fa match
       case GetMediaFiles(deviceId: DeviceId, directory: String) =>
-        println(f"GetMedia is called: $deviceId")
-        val files = s"adb -s $deviceId shell find '$directory' -type f".lazyLines
+        cats.Id(s"adb -s $deviceId shell find '$directory' -type f".lazyLines
           .map[OriginalMediaFile](OriginalMediaFile.apply)
-          .toList
+          .toList)
       case GetFileSize(deviceId, file) =>
         val size =
           s"adb -s $deviceId shell du '${file.name}'".lazyLines.headOption
