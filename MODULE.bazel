@@ -1,9 +1,52 @@
-###############################################################################
-# Bazel now uses Bzlmod by default to manage external dependencies.
-# Please consider migrating your external dependencies from WORKSPACE to MODULE.bazel.
-#
-# For more details, please check https://github.com/bazelbuild/bazel/issues/18958
-###############################################################################
+""" Photo Organizer App for Android"""
+module(
+    name = "photorg",
+)
 
-# Set `repo_name = "io_bazel_rules_scala"` if you still need it.
 bazel_dep(name = "rules_scala", version = "7.0.0")
+bazel_dep(name = "bazel_skylib", version = "1.4.1")
+bazel_dep(name = "rules_jvm_external", version = "4.5")
+
+scala_config = use_extension(
+    "@rules_scala//scala/extensions:config.bzl",
+    "scala_config",
+)
+scala_config.settings(scala_version = "3.3.6")
+
+scala_deps = use_extension(
+    "@rules_scala//scala/extensions:deps.bzl",
+    "scala_deps",
+)
+
+scala_deps.scala()
+scala_protoc = use_extension(
+    "@rules_scala//scala/extensions:protoc.bzl",
+    "scala_protoc",
+    dev_dependency = True,
+)
+use_repo(scala_protoc, "rules_scala_protoc_toolchains")
+
+# Register this toolchain before any others in the file. Still safe even when
+# `--incompatible_enable_proto_toolchain_resolution` is `False`.
+register_toolchains(
+    "@rules_scala_protoc_toolchains//...:all",
+    dev_dependency = True,
+)
+
+# Use the rules_jvm_external extension to declare Maven dependencies
+maven = use_extension(
+    "@rules_jvm_external//:extensions.bzl",
+    "maven",  # Corrected extension name
+)
+maven.install(
+    artifacts = [
+        "org.typelevel:cats-free_3:2.9.0",
+        "org.typelevel:cats-core_3:2.9.0",
+        "org.typelevel:cats-kernel_3:2.9.0",
+        "com.monovore:decline_3:2.4.1",
+    ],
+    repositories = [
+        "https://repo1.maven.org/maven2",
+    ],
+)
+use_repo(maven, "maven")  # Make the 'maven' repo available for BUILD files
