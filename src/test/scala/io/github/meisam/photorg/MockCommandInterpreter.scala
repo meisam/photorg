@@ -10,12 +10,8 @@ import cats.{Id, ~>}
 import MediaFile.{OriginalMediaFile, PulledMediaFile, PushedMediaFile}
 import AndroidDeviceA.*
 
-import org.scalatest.*
-import flatspec.*
-import matchers.*
-
-abstract class UnitSpec extends AnyFlatSpec with ScalaCheckPropertyCheck with should.Matchers with
-  OptionValues with Inside with Inspectors
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
 val mockCommandInterpreter: AndroidDeviceA ~> Id = new:
   val files: List[OriginalMediaFile] =
@@ -38,16 +34,13 @@ val mockCommandInterpreter: AndroidDeviceA ~> Id = new:
         println(f"PushMediaFile is called: $mediaFile")
         PushedMediaFile(mediaFile.name)
 
-object StringSpecification extends Properties("String") with Matchers:
-  property("Backup should find all files on the Device") = forAll {
-    (n: Int, d: Int) =>
-      d should be > n
-      val backedupFiles =
-        backupMediaFilesApp("DEVICE_ID_ABCD", "xxxxx", "/sdcard/DCIM/Camera/")
-          .foldMap(mockCommandInterpreter)
-      backedupFiles.size should be(4)
-      backedupFiles shouldEqual
-        List("Image1.jpg", "image2.CR2", "imag3.MOV", "image4.mp4")
-          .map(PushedMediaFile.apply)
-      1 shouldEqual 1
+class MockCommandInterpreterSpec extends AnyFlatSpec with Matchers:
+  "backupMediaFilesApp" should "find all files on the Device using the mock interpreter" in {
+    val backedupFiles =
+      backupMediaFilesApp("DEVICE_ID_ABCD", "xxxxx", "/sdcard/DCIM/Camera/")
+        .foldMap(mockCommandInterpreter)
+    backedupFiles.size should be(4)
+    backedupFiles shouldEqual
+      List("Image1.jpg", "image2.CR2", "imag3.MOV", "image4.mp4")
+        .map(PushedMediaFile.apply)
   }
