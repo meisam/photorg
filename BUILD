@@ -21,10 +21,9 @@ scala_library(
 scala_library(
     name = "scala_cats_deps",
     exports = [
-        "@maven//:com_monovore_decline_3_2_4_1",
-        "@maven//:org_typelevel_cats_core_3_2_9_0",
-        "@maven//:org_typelevel_cats_free_3_2_9_0",
-        "@maven//:org_typelevel_cats_kernel_3_2_9_0",
+        "@maven//:org_typelevel_cats_core_3_2_13_0",
+        "@maven//:org_typelevel_cats_free_3_2_13_0",
+        "@maven//:org_typelevel_cats_kernel_3_2_13_0",
     ],
 )
 

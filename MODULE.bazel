@@ -5,7 +5,7 @@ module(
 
 bazel_dep(name = "rules_scala", version = "7.0.0")
 bazel_dep(name = "bazel_skylib", version = "1.7.1")
-bazel_dep(name = "rules_jvm_external", version = "6.3")
+bazel_dep(name = "rules_jvm_external", version = "6.7")
 
 scala_config = use_extension(
     "@rules_scala//scala/extensions:config.bzl",
@@ -42,10 +42,9 @@ maven = use_extension(
 )
 maven.install(
     artifacts = [
-        "org.typelevel:cats-free_3:2.9.0",
-        "org.typelevel:cats-core_3:2.9.0",
-        "org.typelevel:cats-kernel_3:2.9.0",
-        "com.monovore:decline_3:2.4.1",
+        "org.typelevel:cats-free_3:2.13.0",
+        "org.typelevel:cats-core_3:2.13.0",
+        "org.typelevel:cats-kernel_3:2.13.0",
         "org.scalacheck:scalacheck_3:1.18.1",
         "org.scalatest:scalatest_3:3.2.19",
         "org.scalatestplus:scalacheck-1-18_3:3.2.19.0",
