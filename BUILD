@@ -1,4 +1,4 @@
-load("@rules_scala//scala:scala.bzl", "scala_library", "scala_binary")
+load("@rules_scala//scala:scala.bzl", "scala_library", "scala_binary", "scala_test")
 
 scala_binary(
     name = "photorg",
@@ -27,3 +27,23 @@ scala_library(
         "@maven//:com_monovore_decline_3_2_4_1",
     ],
 )
+
+scala_test(
+    name = "mock_command_interpreter_test",
+    srcs = ["src/test/scala/io/github/meisam/photorg/MockCommandInterpreter.scala"],
+    deps = [
+        ":photorg_lib",
+        ":scala_test_deps",
+        ":scala_cats_deps", # MockCommandInterpreter uses cats
+    ],
+)
+
+scala_library(
+    name = "scala_test_deps",
+    exports = [ 
+        "@maven//:org_scalatest_scalatest_3_3_2_19",
+        "@maven//:org_scalacheck_scalacheck_3_1_18_1",
+        "@maven//:org_scalatestplus_scalacheck_1_18_3_3_2_19_0",
+    ],
+)
+
