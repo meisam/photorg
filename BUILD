@@ -44,16 +44,6 @@ scala_test(
     deps = [
         ":dry_run_interpreter_lib",
         ":photorg_lib",
-        ":scala_cats_deps",  # MockCommandInterpreter uses cats
-        ":scala_test_deps",
-    ],
-)
-
-scala_library(
-    name = "scala_test_deps",
-    exports = [
-        "@maven//:org_scalacheck_scalacheck_3_1_18_1",
-        "@maven//:org_scalatest_scalatest_3_3_2_19",
-        "@maven//:org_scalatestplus_scalacheck_1_18_3_3_2_19_0",
+        ":scala_cats_deps",
     ],
 )
