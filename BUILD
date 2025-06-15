@@ -28,6 +28,17 @@ scala_library(
     ],
 )
 
+scala_library(
+    name = "dry_run_interpreter_lib",
+    srcs = [
+        "src/main/scala/io/github/meisam/photorg/DryRunInterpreter.scala",
+    ],
+    deps = [
+        ":scala_cats_deps",
+        ":photorg_lib",
+    ],
+)
+
 scala_test(
     name = "mock_command_interpreter_test",
     srcs = ["src/test/scala/io/github/meisam/photorg/MockCommandInterpreter.scala"],
@@ -35,6 +46,7 @@ scala_test(
         ":photorg_lib",
         ":scala_test_deps",
         ":scala_cats_deps", # MockCommandInterpreter uses cats
+        ":dry_run_interpreter_lib",
     ],
 )
 
