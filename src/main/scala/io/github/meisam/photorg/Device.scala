@@ -24,6 +24,7 @@ enum MediaFile(name: String):
   case OriginalMediaFile(name: String) extends MediaFile(name)
   case PulledMediaFile(name: String) extends MediaFile(name)
   case PushedMediaFile(name: String) extends MediaFile(name)
+  def getName: String = name
 
 import MediaFile.{OriginalMediaFile, PulledMediaFile, PushedMediaFile}
 enum AndroidDeviceA[A]:
@@ -106,14 +107,20 @@ val onDeviceCommandnInterpreter: AndroidDeviceA ~> Id = new:
         println(f"PushMediaFile is called: $mediaFile")
         PushedMediaFile(mediaFile.name)
 
-@main
-def freeMonadRun(
+def backup(
     sourceDeviceId: String,
     targetDeviceId: String,
     mediaDirectory: String
-) =
+): List[PushedMediaFile] =
+  List.empty
 
+@main
+def main(
+    sourceDeviceId: DeviceId,
+    targetDeviceId: DeviceId,
+    mediaDirectory: String
+): Unit =
   val backedupFiles =
     backupMediaFilesApp(sourceDeviceId, targetDeviceId, mediaDirectory)
-    // .foldMap(onDeviceCommandnInterpreter)
+  // .foldMap(onDeviceCommandnInterpreter)
   println(backedupFiles)
