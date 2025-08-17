@@ -14,12 +14,25 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
 class MockCommandInterpreterSpec extends AnyFlatSpec with Matchers:
-  "backupMediaFilesApp" should "find all files on the Device using the mock interpreter" in {
-    val backedupFiles =
-      backupMediaFilesApp("DEVICE_ID_ABCD", "xxxxx", "/sdcard/DCIM/Camera/")
-        .foldMap(dryRunCommandInterpreter)
+  "getMediaFiles" should "find all files on the Device using the mock interpreter" in:
+    val backedupFiles: List[OriginalMediaFile] =
+      getMediaFiles("SOURCE_DEVICE_ID", "/sdcard/DCIM/Camera/")
+        .foldMap(dryRunCommandInterpreter(
+      List("Image1.jpg", "IMG.CR2", "Video2.MOV", "VID2.mp4")
+        ))
     backedupFiles.size should be(4)
     backedupFiles shouldEqual
-      List("Image1.jpg", "image2.CR2", "imag3.MOV", "image4.mp4")
-        .map(PushedMediaFile.apply)
-  }
+      List("Image1.jpg", "IMG.CR2", "Video2.MOV", "VID2.mp4")
+        .map(OriginalMediaFile.apply)
+
+  "getFileSize" should "find get the file size correctly" in:
+    val fileSizes =
+      getOriginalFileSizes("DEVICE_ID", "/sdcard/DCIM/Camera/")
+      .foldMap(dryRunCommandInterpreter(List("Image1.jpg", "IMG.CR2", "video1.MOV", "VID2.mp4")))
+    fileSizes shouldEqual List(10L, 7L, 10L, 8L)
+
+  "backupMediaFilesApp" should "find get the file name correctly" in:
+    val backedupFiles =
+      backupMediaFilesApp("SOURCE_DEVICE_ID", "TARGET_DEVICE_ID", "/sdcard/DCIM/Camera/")
+      .foldMap(dryRunCommandInterpreter(List("Image1.jpg", "IMG.CR2", "video1.MOV", "VID2.mp4")))
+    backedupFiles shouldEqual List("Image1.jpg", "IMG.CR2", "video1.MOV", "VID2.mp4").map(PushedMediaFile.apply)
