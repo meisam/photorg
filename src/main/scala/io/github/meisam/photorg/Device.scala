@@ -53,6 +53,7 @@ def getFileSize(deviceId: DeviceId)(
     mediaFile: OriginalMediaFile
 ): AndroidDevice[Long] =
   liftF[AndroidDeviceA, Long](GetFileSize(deviceId, mediaFile))
+
 def pullMediaFile(deviceId: DeviceId)(
     mediaFile: OriginalMediaFile
 ): AndroidDevice[PulledMediaFile] =
@@ -76,6 +77,17 @@ def backupMediaFilesApp(
     filesToBePulled <- mediaFiles.traverse(filePullingFunction)
     filesToBePushed <- filesToBePulled.traverse(filePushingFunction)
   yield filesToBePushed
+
+def getOriginalFileSizes(
+  sourceDeviceId: DeviceId,
+  cameraPath: String
+): AndroidDevice[List[Long]] =
+  val fileListingFunction=  pullMediaFile(sourceDeviceId)
+  val getFileSizeFunction = getFileSize(sourceDeviceId)
+  for
+    mediaFiles <- getMediaFiles(sourceDeviceId, cameraPath)
+    sizes <- mediaFiles.map(getFileSizeFunction).sequence
+  yield sizes
 
 import cats.arrow.FunctionK
 import cats.{Id, ~>}
