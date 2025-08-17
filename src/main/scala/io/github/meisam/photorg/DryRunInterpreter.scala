@@ -10,23 +10,19 @@ import cats.{Id, ~>}
 import MediaFile.{OriginalMediaFile, PulledMediaFile, PushedMediaFile}
 import AndroidDeviceA.*
 
-val dryRunCommandInterpreter: AndroidDeviceA ~> Id = new:
+def dryRunCommandInterpreter(fileNames: List[String]): AndroidDeviceA ~> Id = new:
   val files: List[OriginalMediaFile] =
-    List("Image1.jpg", "image2.CR2", "imag3.MOV", "image4.mp4").map(
+    fileNames.map(
       OriginalMediaFile.apply
     )
   def apply[A](fa: AndroidDeviceA[A]): Id[A] =
     fa match
       case GetMediaFiles(deviceId: DeviceId, directory: String) =>
-        println(f"GetMedia is called: $deviceId")
         files
       case GetFileSize(deviceId, file) =>
         val size = file.name.size.toLong
-        println(f"GetFileSize is called: $file has size $size")
         size
       case PullMediaFile(deviceId, mediaFile) =>
-        println(f"PullMediaFile is called: $mediaFile")
         PulledMediaFile(mediaFile.name)
       case PushMediaFile(deviceId, mediaFile) =>
-        println(f"PushMediaFile is called: $mediaFile")
         PushedMediaFile(mediaFile.name)
