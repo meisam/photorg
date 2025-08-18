@@ -13,7 +13,7 @@ import AndroidDeviceA.*
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
-class MockCommandInterpreterSpec extends AnyFlatSpec with Matchers:
+class DryRunInterpreterSpec extends AnyFlatSpec with Matchers:
   "getMediaFiles" should "find all files on the Device using the mock interpreter" in:
     val backedupFiles: List[OriginalMediaFile] =
       getMediaFiles("SOURCE_DEVICE_ID", "/sdcard/DCIM/Camera/")

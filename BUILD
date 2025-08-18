@@ -39,8 +39,8 @@ scala_library(
 )
 
 scala_test(
-    name = "mock_command_interpreter_test",
-    srcs = ["src/test/scala/io/github/meisam/photorg/MockCommandInterpreter.scala"],
+    name = "dry_run_interpreter_test",
+    srcs = ["src/test/scala/io/github/meisam/photorg/DryRunInerpreterSpec.scala"],
     deps = [
         ":dry_run_interpreter_lib",
         ":photorg_lib",
