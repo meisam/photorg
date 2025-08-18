@@ -97,10 +97,6 @@ import cats.arrow.FunctionK
 import cats.{Id, ~>}
 val onDeviceCommandnInterpreter: AndroidDeviceA ~> Id = new:
   import scala.sys.process.*
-  val files: List[OriginalMediaFile] =
-    List("Image1.jpg", "image2.CR2", "imag3.MOV", "image4.mp4").map(
-      OriginalMediaFile.apply
-    )
   def apply[A](fa: AndroidDeviceA[A]): Id[A] =
     fa match
       case GetMediaFiles(deviceId: Device.DeviceId, directory: String) =>
