@@ -1,4 +1,4 @@
-package io.github.meisam.photorg
+package house.rivers.photorg
 
 import cats.free.Free
 import cats.free.Free.liftF

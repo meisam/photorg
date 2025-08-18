@@ -11,7 +11,7 @@
   If not, see <https://www.gnu.org/licenses/>.
  */
 
-package io.github.meisam.photorg
+package house.rivers.photorg
 
 import scala.annotation.targetName
 import scala.sys.process.*

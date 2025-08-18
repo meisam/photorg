@@ -2,7 +2,7 @@ load("@rules_scala//scala:scala.bzl", "scala_binary", "scala_library", "scala_te
 
 scala_binary(
     name = "photorg",
-    main_class = "io.github.meisam.photorg.freeMonadRun",
+    main_class = "house.rivers.photorg.freeMonadRun",
     deps = [
         ":photorg_lib",
     ],
@@ -11,7 +11,7 @@ scala_binary(
 scala_library(
     name = "photorg_lib",
     srcs = [
-        "src/main/scala/io/github/meisam/photorg/Device.scala",
+        "src/main/scala/house/rivers/photorg/Device.scala",
     ],
     deps = [
         ":scala_cats_deps",
@@ -30,7 +30,7 @@ scala_library(
 scala_library(
     name = "dry_run_interpreter_lib",
     srcs = [
-        "src/main/scala/io/github/meisam/photorg/DryRunInterpreter.scala",
+        "src/main/scala/house/rivers/photorg/DryRunInterpreter.scala",
     ],
     deps = [
         ":photorg_lib",
@@ -40,7 +40,7 @@ scala_library(
 
 scala_test(
     name = "dry_run_interpreter_test",
-    srcs = ["src/test/scala/io/github/meisam/photorg/DryRunInerpreterSpec.scala"],
+    srcs = ["src/test/scala/house/rivers/photorg/photorg/DryRunInerpreterSpec.scala"],
     deps = [
         ":dry_run_interpreter_lib",
         ":photorg_lib",
