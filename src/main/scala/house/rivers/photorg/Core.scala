@@ -99,14 +99,3 @@ def backup(
     mediaDirectory: String
 ): List[PushedMediaFile] =
   List.empty
-
-@main
-def main(
-    sourceDeviceId: String,
-    targetDeviceId: String,
-    mediaDirectory: String
-): Unit =
-  val backedupFiles =
-    backupMediaFilesApp(Device.fromStringId(sourceDeviceId), Device.fromStringId(targetDeviceId), mediaDirectory)
-  // .foldMap(onDeviceCommandnInterpreter)
-  println(backedupFiles)

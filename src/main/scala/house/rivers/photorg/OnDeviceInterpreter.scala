@@ -18,7 +18,7 @@ val onDeviceCommandnInterpreter: AndroidDeviceA ~> Id = new:
         )
       case GetFileSize(deviceId, file) =>
         val size =
-          s"adb -s $deviceId exec_out du '${file.name}'".lazyLines.headOption
+          s"adb -s $deviceId exec-out du '${file.name}'".lazyLines.headOption
             .map(_.takeWhile(_.isDigit).toLong)
             .getOrElse(-1L)
         println(f"GetFileSize is called: $file has size $size")

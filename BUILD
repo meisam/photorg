@@ -2,9 +2,14 @@ load("@rules_scala//scala:scala.bzl", "scala_binary", "scala_library", "scala_te
 
 scala_binary(
     name = "photorg",
-    main_class = "house.rivers.photorg.freeMonadRun",
+    main_class = "house.rivers.photorg.main",
+    srcs = [
+        "src/main/scala/house/rivers/photorg/Main.scala",
+    ],
     deps = [
         ":core_lib",
+        ":on_device_interpreter_lib",
+        ":scala_cats_deps",
     ],
 )
 
@@ -17,7 +22,6 @@ scala_library(
         ":scala_cats_deps",
     ],
 )
-
 
 scala_library(
     name = "scala_cats_deps",
