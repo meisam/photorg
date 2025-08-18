@@ -40,7 +40,7 @@ scala_library(
 
 scala_test(
     name = "dry_run_interpreter_test",
-    srcs = ["src/test/scala/house/rivers/photorg/photorg/DryRunInerpreterSpec.scala"],
+    srcs = ["src/test/scala/house/rivers/photorg/DryRunInerpreterSpec.scala"],
     deps = [
         ":dry_run_interpreter_lib",
         ":photorg_lib",
