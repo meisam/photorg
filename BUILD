@@ -4,12 +4,12 @@ scala_binary(
     name = "photorg",
     main_class = "house.rivers.photorg.freeMonadRun",
     deps = [
-        ":photorg_lib",
+        ":core_lib",
     ],
 )
 
 scala_library(
-    name = "photorg_lib",
+    name = "core_lib",
     srcs = [
         "src/main/scala/house/rivers/photorg/Device.scala",
     ],
@@ -34,7 +34,7 @@ scala_library(
         "src/main/scala/house/rivers/photorg/OnDeviceInterpreter.scala"
     ],
     deps = [
-        ":photorg_lib",
+        ":core_lib",
         ":scala_cats_deps",
     ]
 )
@@ -45,7 +45,7 @@ scala_library(
         "src/main/scala/house/rivers/photorg/DryRunInterpreter.scala",
     ],
     deps = [
-        ":photorg_lib",
+        ":core_lib",
         ":scala_cats_deps",
     ],
 )
@@ -55,7 +55,7 @@ scala_test(
     srcs = ["src/test/scala/house/rivers/photorg/DryRunInerpreterSpec.scala"],
     deps = [
         ":dry_run_interpreter_lib",
-        ":photorg_lib",
+        ":core_lib",
         ":scala_cats_deps",
     ],
 )
