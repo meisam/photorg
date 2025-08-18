@@ -93,32 +93,6 @@ def getOriginalFileSizes(
     sizes <- mediaFiles.map(getFileSizeFunction).sequence
   yield sizes
 
-import cats.arrow.FunctionK
-import cats.{Id, ~>}
-val onDeviceCommandnInterpreter: AndroidDeviceA ~> Id = new:
-  import scala.sys.process.*
-  def apply[A](fa: AndroidDeviceA[A]): Id[A] =
-    fa match
-      case GetMediaFiles(deviceId: Device.DeviceId, directory: String) =>
-        cats.Id(
-          s"adb -s $deviceId shell find '$directory' -type f".lazyLines
-            .map[OriginalMediaFile](OriginalMediaFile.apply)
-            .toList
-        )
-      case GetFileSize(deviceId, file) =>
-        val size =
-          s"adb -s $deviceId shell du '${file.name}'".lazyLines.headOption
-            .map(_.takeWhile(_.isDigit).toLong)
-            .getOrElse(-1L)
-        println(f"GetFileSize is called: $file has size $size")
-        size
-      case PullMediaFile(deviceId, mediaFile) =>
-        println(f"PullMediaFile is called: $mediaFile")
-        PulledMediaFile(mediaFile.name)
-      case PushMediaFile(deviceId, mediaFile) =>
-        println(f"PushMediaFile is called: $mediaFile")
-        PushedMediaFile(mediaFile.name)
-
 def backup(
     sourceDeviceId: String,
     targetDeviceId: String,

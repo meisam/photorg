@@ -18,6 +18,7 @@ scala_library(
     ],
 )
 
+
 scala_library(
     name = "scala_cats_deps",
     exports = [
@@ -25,6 +26,17 @@ scala_library(
         "@maven//:org_typelevel_cats_free_3_2_13_0",
         "@maven//:org_typelevel_cats_kernel_3_2_13_0",
     ],
+)
+
+scala_library(
+    name="on_device_interpreter_lib",
+    srcs = [
+        "src/main/scala/house/rivers/photorg/OnDeviceInterpreter.scala"
+    ],
+    deps = [
+        ":photorg_lib",
+        ":scala_cats_deps",
+    ]
 )
 
 scala_library(
