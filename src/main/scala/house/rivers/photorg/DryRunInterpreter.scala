@@ -11,6 +11,8 @@ import MediaFile.{OriginalMediaFile, PulledMediaFile, PushedMediaFile}
 import AndroidDeviceA.*
 
 def dryRunCommandInterpreter(fileNames: List[String]): AndroidDeviceA ~> Id = new:
+
+  import Device.*
   val files: List[OriginalMediaFile] =
     fileNames.map(
       OriginalMediaFile.apply

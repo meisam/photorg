@@ -18,8 +18,12 @@ import cats.free.Free.liftF
 import cats.syntax.all.*
 import cats.syntax.traverse
 
-type ErrorMessages = String
-type DeviceId = String
+
+object Device:
+  opaque type ErrorMessages = String
+  opaque type DeviceId = String
+  def fromStringId(deviceId: String): DeviceId = deviceId
+
 enum MediaFile(name: String):
   case OriginalMediaFile(name: String) extends MediaFile(name)
   case PulledMediaFile(name: String) extends MediaFile(name)
@@ -28,13 +32,13 @@ enum MediaFile(name: String):
 
 import MediaFile.{OriginalMediaFile, PulledMediaFile, PushedMediaFile}
 enum AndroidDeviceA[A]:
-  case GetMediaFiles(deviceId: DeviceId, directory: String)
+  case GetMediaFiles(deviceId: Device.DeviceId, directory: String)
       extends AndroidDeviceA[List[OriginalMediaFile]]
-  case GetFileSize(deviceId: DeviceId, mediaFile: OriginalMediaFile)
+  case GetFileSize(deviceId: Device.DeviceId, mediaFile: OriginalMediaFile)
       extends AndroidDeviceA[Long]
-  case PullMediaFile(deviceId: DeviceId, mediaFile: OriginalMediaFile)
+  case PullMediaFile(deviceId: Device.DeviceId, mediaFile: OriginalMediaFile)
       extends AndroidDeviceA[PulledMediaFile]
-  case PushMediaFile(deviceId: DeviceId, mediaFile: PulledMediaFile)
+  case PushMediaFile(deviceId: Device.DeviceId, mediaFile: PulledMediaFile)
       extends AndroidDeviceA[PushedMediaFile]
 
 type AndroidDevice[A] = Free[AndroidDeviceA, A]
@@ -42,31 +46,31 @@ type AndroidDevice[A] = Free[AndroidDeviceA, A]
 import AndroidDeviceA.*
 
 def getMediaFiles(
-    deviceId: DeviceId,
+    deviceId: Device.DeviceId,
     directory: String
 ): AndroidDevice[List[OriginalMediaFile]] =
   liftF[AndroidDeviceA, List[OriginalMediaFile]](
     GetMediaFiles(deviceId, directory)
   )
 
-def getFileSize(deviceId: DeviceId)(
+def getFileSize(deviceId: Device.DeviceId)(
     mediaFile: OriginalMediaFile
 ): AndroidDevice[Long] =
   liftF[AndroidDeviceA, Long](GetFileSize(deviceId, mediaFile))
 
-def pullMediaFile(deviceId: DeviceId)(
+def pullMediaFile(deviceId: Device.DeviceId)(
     mediaFile: OriginalMediaFile
 ): AndroidDevice[PulledMediaFile] =
   liftF[AndroidDeviceA, PulledMediaFile](PullMediaFile(deviceId, mediaFile))
 
-def pushMediaFile(deviceId: DeviceId)(
+def pushMediaFile(deviceId: Device.DeviceId)(
     mediaFile: PulledMediaFile
 ): AndroidDevice[PushedMediaFile] =
   liftF[AndroidDeviceA, PushedMediaFile](PushMediaFile(deviceId, mediaFile))
 
 def backupMediaFilesApp(
-    sourceDeviceId: DeviceId,
-    targetDeviceId: DeviceId,
+    sourceDeviceId: Device.DeviceId,
+    targetDeviceId: Device.DeviceId,
     cameraPath: String
 ): AndroidDevice[List[MediaFile]] =
   val filePullingFunction = pullMediaFile(sourceDeviceId)
@@ -79,7 +83,7 @@ def backupMediaFilesApp(
   yield filesToBePushed
 
 def getOriginalFileSizes(
-  sourceDeviceId: DeviceId,
+  sourceDeviceId: Device.DeviceId,
   cameraPath: String
 ): AndroidDevice[List[Long]] =
   val fileListingFunction=  pullMediaFile(sourceDeviceId)
@@ -99,7 +103,7 @@ val onDeviceCommandnInterpreter: AndroidDeviceA ~> Id = new:
     )
   def apply[A](fa: AndroidDeviceA[A]): Id[A] =
     fa match
-      case GetMediaFiles(deviceId: DeviceId, directory: String) =>
+      case GetMediaFiles(deviceId: Device.DeviceId, directory: String) =>
         cats.Id(
           s"adb -s $deviceId shell find '$directory' -type f".lazyLines
             .map[OriginalMediaFile](OriginalMediaFile.apply)
@@ -128,11 +132,11 @@ def backup(
 
 @main
 def main(
-    sourceDeviceId: DeviceId,
-    targetDeviceId: DeviceId,
+    sourceDeviceId: String,
+    targetDeviceId: String,
     mediaDirectory: String
 ): Unit =
   val backedupFiles =
-    backupMediaFilesApp(sourceDeviceId, targetDeviceId, mediaDirectory)
+    backupMediaFilesApp(Device.fromStringId(sourceDeviceId), Device.fromStringId(targetDeviceId), mediaDirectory)
   // .foldMap(onDeviceCommandnInterpreter)
   println(backedupFiles)
