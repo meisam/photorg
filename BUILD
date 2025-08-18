@@ -11,7 +11,7 @@ scala_binary(
 scala_library(
     name = "core_lib",
     srcs = [
-        "src/main/scala/house/rivers/photorg/Device.scala",
+        "src/main/scala/house/rivers/photorg/Core.scala",
     ],
     deps = [
         ":scala_cats_deps",
